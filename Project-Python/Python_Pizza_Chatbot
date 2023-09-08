@@ -1,3 +1,4 @@
+import time
 def Order_pizza():
     print("Welcome to my pizza store, what do you want to order?")
     time.sleep(1)
