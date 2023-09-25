@@ -57,14 +57,6 @@ CREATE TABLE Bookings (
     FOREIGN KEY (UserID) REFERENCES Users (UserID)
 );
 
--- Create the Location Data Table
-CREATE TABLE LocationData (
-    RestaurantID INTEGER PRIMARY KEY,
-    Latitude REAL,
-    Longitude REAL,
-    FOREIGN KEY (RestaurantID) REFERENCES Restaurants (RestaurantID)
-);
-
 -- Create the Images Table
 CREATE TABLE Images (
     ImageID INTEGER PRIMARY KEY,
@@ -87,12 +79,14 @@ CREATE TABLE PaymentInformation (
     FOREIGN KEY (RestaurantID) REFERENCES Restaurants (RestaurantID)
 );
 
--- Create the Employee Information Table
-CREATE TABLE EmployeeInformation (
+-- Create the Employee Table
+CREATE TABLE Employee (
     EmployeeID INTEGER PRIMARY KEY,
     RestaurantID INTEGER,
     EmployeeName TEXT NOT NULL,
     Position TEXT,
+    Performance TEXT,
+    Salary DECIMAL(8 , 2),
     ContactInformation TEXT,
     FOREIGN KEY (RestaurantID) REFERENCES Restaurants (RestaurantID)
 );
@@ -108,14 +102,6 @@ CREATE TABLE EventsAndPromotions (
     FOREIGN KEY (RestaurantID) REFERENCES Restaurants (RestaurantID)
 );
 
--- Create the Categories and Tags Table
-CREATE TABLE CategoriesAndTags (
-    CategoryTagID INTEGER PRIMARY KEY,
-    RestaurantID INTEGER,
-    CategoryTagName TEXT NOT NULL,
-    FOREIGN KEY (RestaurantID) REFERENCES Restaurants (RestaurantID)
-);
-
 -- Create the Orders Table
 CREATE TABLE Orders (
     OrderID INTEGER PRIMARY KEY,
@@ -127,3 +113,46 @@ CREATE TABLE Orders (
     FOREIGN KEY (UserID) REFERENCES Users (UserID),
     FOREIGN KEY (RestaurantID) REFERENCES Restaurants (RestaurantID)
 );
+
+-- Insert values in DB
+-- Insert data into the Restaurants table
+INSERT INTO Restaurants (RestaurantName, Address, PhoneNumber, Email, Website, OpeningHours, CuisineType, AverageRating)
+VALUES
+    ('Best Food Ever', '24 Sukumwit Rd', '081-123-4567', 'info@example.com', 'www.bestfoodever.com', '9:00 AM - 10:00 PM', 'Italian', 4.5),
+    ('Tacos and Salsa', 'Phloen Chit Rd', '082-345-6789', 'info2@example.com', 'www.tacosandsalsa.com', '10:00 AM - 11:00 PM', 'Mexican', 4.0),
+    ('Subarashi Salmon', '30 Sukumwit Rd', '083-456-7891', 'info3@example.com', 'www.subarashi.com', '11:00 AM - 9:00 PM', 'Japanese', 4.2);
+
+-- Insert data into the MenuItems table
+INSERT INTO MenuItems (RestaurantID, ItemName, Description, Price, Category, Vegetarian, GlutenFree)
+VALUES
+    (1, 'Spaghetti Carbonara', 'Creamy pasta with bacon and eggs', 12.99, 'Main Course', 0, 0),
+    (1, 'Margherita Pizza', 'Classic tomato and mozzarella pizza', 10.99, 'Main Course', 1, 0),
+    (2, 'Taco Platter', 'Assorted tacos with salsa and guacamole', 14.99, 'Main Course', 0, 0),
+    (2, 'Quesadilla', 'Cheese-filled tortilla with chicken', 8.99, 'Appetizer', 0, 0),
+    (3, 'Sushi Combo', 'Assorted sushi rolls with wasabi and soy sauce', 19.99, 'Main Course', 0, 1),
+    (3, 'Miso Soup', 'Traditional Japanese soup with tofu and seaweed', 3.99, 'Appetizer', 1, 1);
+
+-- Examples of SQL queries
+-- Show Restaurant Informations
+SELECT RestaurantName, Address, CuisineType
+FROM Restaurants;
+
+-- Find Vegetarian Menu Items
+SELECT ItemName, Price
+FROM MenuItems
+WHERE Vegetarian = 1 AND RestaurantID = 1;
+
+-- Find Glutenfree Menu Items with Informations 
+SELECT itemname, description, category, price
+FROM MenuItems
+where glutenfree = FALSE
+
+-- Find Restaurants have Address in 'Sukumwit Rd'
+SELECT *
+FROM Restaurants
+WHERE Address LIKE '%Sukumwit Rd%';
+
+-- Get Average Price GroupBy RestaurantID
+SELECT restaurantid, AVG(Price) AS AveragePrice
+FROM MenuItems
+GROUP BY restaurantid
